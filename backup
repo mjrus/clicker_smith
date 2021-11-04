@@ -1,0 +1,59 @@
+class SelectionMenu:
+    """
+    Selection Menu: this creates and populates with menu options. \n
+    for 1600, 900 \n
+    x is 120 \n
+    y is 170 \n
+    width is 540 \n
+    height is 630 \n
+    """
+
+    def __init__(self, x, y, width, height):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.menu_pos = 0
+        self.font = font.SysFont("verdana", 36)
+        self.options: list = []
+
+    def render(self, surface, options):
+        draw.rect(surface, (255, 255, 255), (self.x, self.y, self.width, self.height), 1)
+        if len(options) >= (self.menu_pos + 5):
+            limit: int = self.menu_pos + 5
+        else:
+            limit: int = len(options)
+        temp_list: list = []
+        for i in range(self.menu_pos, limit):
+            temp_list.append(self.__create_option__(surface, options[i], int(i - self.menu_pos)))
+
+    def __create_option__(self, surface, option, increment: int):
+        option_rect = Rect((
+            self.x,
+            self.y + (self.height / 5) * increment,
+            self.width,
+            self.height / 5
+        ))
+
+        draw.rect(surface, (67, 87, 96), option_rect)
+        option_image = Rect(self.x, option_rect.y, option_rect.height, option_rect.height)
+        draw.rect(surface, (42, 55, 61), option_image)  # Option Image
+
+        start_pos = (option_image.x + option_image.width, option_rect.y + (option_rect.height / 2))
+        end_pos = (self.x + (self.width * .99999), option_rect.y + (option_rect.height / 2))
+        draw.line(surface, (255, 255, 255), start_pos, end_pos)
+
+        surface.blit(
+            self.font.render(option.name.title(), True, (255, 255, 255)),
+            (
+                option_image.x + option_image.width * 1.1,
+                option_rect.y + option_rect.height * .0625
+            )
+        )
+
+        draw.rect(surface, (255, 255, 255), option_image, 1)
+        draw.rect(surface, option.colour, option_rect, 1)
+        return option
+
+    def set_menu_position(self, position):
+        self.menu_pos = position
